@@ -50,3 +50,45 @@ Tecnologias a serem utilizadas:
 	Istio, servico de service mesh, vai monitorar todas as comunicacoes dos nossos sistemas, para monitorarmos tudo que esta acontecendo entre os nossos servicos utilizando o Kiali.
 	Grafana, Vai se conectar com o sistemas que vai coletar as metricas, utilizando o Prometheus.
 	
+====================================================================================================================
+
+=========================================== MAO NA MASSA ===========================================================
+
+A tag "extra_hosts" no docker-compose, facilita pegar diversos sistemas em redes diferentes e coloca eles para se conversarem.
+Por exemplo, quando subirmos o servico nosso Kafka com o docker-compose, vamos fazer o nosso sistema falar com o Kafka atraves da rede padrao do Docker.
+
+Apos criar os nossos dockerfile e o docker-compose, subimos os containers utilizando o comando do docker-compose:
+"
+vitor@vtr-dsk:~/imersao-fs-fc/fs-fc-code_delivery/simulator$ docker-compose up -d
+"
+Apos subir nossos containers, podemos listar nossos containers com o docker-compose com o comando:
+"
+vitor@vtr-dsk:~/imersao-fs-fc/fs-fc-code_delivery/simulator$ docker-compose ps
+  Name           Command        State   Ports
+---------------------------------------------
+simulator   tail -f /dev/null   Up    
+"
+Feito isso, podemos testar nosso container, entrando nele com o comando, passando o it(modo inteirativo) e o nome do nosso container:
+"
+vitor@vtr-dsk:~/imersao-fs-fc/fs-fc-code_delivery/simulator$ docker exec -it simulator bash
+root@4cd9f1f92c31:/go/src# 
+"
+Ao listarmos o conteudo dentro do nosso container, vamos ver que esta de fato, compartilhando os mesmos arquivos na nossa maquina aonde estamos criando o projeto:
+"
+root@4cd9f1f92c31:/go/src# ls -la
+total 20
+drwxrwxr-x 3 1000 1000 4096 Apr  6 01:46 .
+drwxrwxrwx 4 root root 4096 Apr  2 00:20 ..
+drwxrwxr-x 2 1000 1000 4096 Apr  6 01:45 .idea
+-rw-rw-r-- 1 1000 1000  172 Apr  6 01:45 Dockerfile
+-rw-rw-r-- 1 1000 1000  164 Apr  6 01:46 docker-compose.yaml
+"
+O go possui uma ferramenta chamada de "go mod". Ele trabalha como se fosse um controlador de gerenciamento de versao de todos os pacotes externos utilizados no Go.
+Vamos iniciar com o Go Mod para termos o controle de versao dos nossos pacotes:
+"
+root@4cd9f1f92c31:/go/src# go mod init github.com/vitor9/fs-fc-code_delivery
+go: creating new go.mod: module github.com/vitor9/fs-fc-code_delivery
+"
+Conforme eu for add pacotes externos, ele vai colocando um require com os pacotes e versoes no arqv go.mod
+
+Nosso sistema le rotas. Mandamos as posicoes delas.
