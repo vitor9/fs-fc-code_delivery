@@ -1,0 +1,52 @@
+:Para solucionar isso, trabalharemos com o Apache Kafka para o envio e recebimento de dados entre os sistemas.
+
+P:Nao eh responsabilidade do servico backend persistir os dados no ElasticSearch. Logo, como armazenar as informacoes no ElasticSearch?
+S:Utilizaremos o Kafka Connect, que tambem consumira os dados do simulador e fara a insercao no ElasticSearch.
+
+P:Precisaremos exibir em tempo real a localizacao de cada entregador(deixar tudo dinamico, em tempo real).
+S: Trabalharemos com websockets. Assim que o backend receber a informacao do Apache Kafka, ele enviara as pocies posicoes para o frontend via websocket.
+
+O que eh WebSocket?
+Eh uma forma de fazermos conexao TCP, do browser, com o servidor, para mantermos uma conexao persistente, ao inves de mandar e receber o tempo todo. Temos uma conexa, ela vai ficar persistente, para mandarmos e recebermos tudo dentro do mesmo canal de comunicacao, diret, entre o front e back. Ao inves de termos que mandar milhares requisicoes.
+
+================================================ DINAMICA DO SISTEMA =============================================
+Backend inicia o processo, simulador comeca a mandar as posicoes.
+Via web-socket, o back vai comecar a mandar para o front, aonde esta o carrinho, para que o frontend pilote o carro para mostrar aonde o motorista esta rodando.
+
+Simulador
+O simulador vai ficar passando dados de long e latit, quais os dados da corrida que esta sendo enviada nesse momento.
+Vamos utilizar o Apache Kafka para esses envios. Quando inicia uma corrida, o back fala, estou iniciando uma corrida tal aqui para la, ai o simulador acessa o kafka, pega a informacao
+
+Queremos pegar esses dados e jogar no elasticsearch, com o Kafka Connect. Conforme o ismulador for mandando as informacoes para o Kafka, o Kafka COnnect vai pegar elas, que esta sendo enviada p/ o simulador,
+vai pegar e jogar no elasticsearch. Os dados de cada posicao e tudo que esta acontecendo, vai ficar no elasticsearch.
+
+Vamos poder consultar o elasticsearch, atraves do Kibana. O kibana eh um dashboard, que consegue acessar os dados do elasticsearch.
+
+Essa estrutura eh escalavel para aguentar bastante tecnologia e aguenta muita requisicao.
+
+Tecnologias a serem utilizadas:
+- Simulador: GoLang. 
+	Possui um sistema que facilita trabalhar com multi-threading. Vou ter que enviar para o Kafka diversas posicoes de diversas corridas ao mesmo tempo, simultaneamente, e isso o multi-thread ajuda muito.
+
+- BackEnd: Nest.js e Mongo.
+	Nest.js roda em cima do node, e eh especifico em trabalhar com microsservicos. Vai ter bastante facilidade com websocket, e fazer comunicacao com o Kafka e o MongoDB
+	MongoDB vai ser o nosso mecanismo nao-relacional, de persistencia de dados.
+
+- FrontEnd: React.
+	Vamos utilizar a Material.UI para deixar a interface mais agradavel e simples, para trabalharmos.
+
+- Kafka & Kafka Connect.
+	Kafka vai ser o nosso servidor de Streaming de dados que recebe as informacoes e consegue prover em tempo real.
+	O Connect, vai se conectar no Kafka e ira jogar as informacoes em diversos sistemas.
+
+- ElasticSearch e Kibana.
+	O kibana eh um dashboard, que consegue acessar os dados do elasticsearch.
+
+- Docker e Kubernetes
+	Docker vai nos ajudar a montar o ambiente tranquilo, para subirmos todas estas tecnologias com facilidade, ao inves de instalar tecnologia por tecnologia
+	Kubernetes vai nos auxiliar com a orquestracao dos containers do Docker, para que subirmos os containers com mais praticidade.
+
+- Istio, Kiali, Prometheus e Grafana
+	Istio, servico de service mesh, vai monitorar todas as comunicacoes dos nossos sistemas, para monitorarmos tudo que esta acontecendo entre os nossos servicos utilizando o Kiali.
+	Grafana, Vai se conectar com o sistemas que vai coletar as metricas, utilizando o Prometheus.
+	
