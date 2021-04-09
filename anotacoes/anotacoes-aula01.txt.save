@@ -92,3 +92,6 @@ go: creating new go.mod: module github.com/vitor9/fs-fc-code_delivery
 Conforme eu for add pacotes externos, ele vai colocando um require com os pacotes e versoes no arqv go.mod
 
 Nosso sistema le rotas. Mandamos as posicoes delas.
+
+Criamos o arquivo consumer.go. Ele vai ser responsavel por consumir e pegar os dados na nossa fila/topico do kafka.
+

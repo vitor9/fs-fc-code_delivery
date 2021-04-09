@@ -1,0 +1,33 @@
+package main
+
+import (
+	"fmt"
+	"github.com/joho/godotenv"
+	"github.com/vitor9/fs-fc-code_delivery/infra/kafka"
+	//kafka2 "github.com/vitor9/fs-fc-code_delivery/application/kafka"
+	ckafka "github.com/confluentinc/confluent-kafka-go/kafka"
+	"log"
+)
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("error loading .env file")
+	}
+}
+func main() {
+	// Estamos consumindo os dados do Kafka, e iterando no loop msg abaixo
+	// Toda a msg que o loop ta recebendo, ele joga no msgChan, e tambem le ele no loop
+	msgChan := make(chan *ckafka.Message)
+	consumer := kafka.NewKafkaConsumer(msgChan)
+	// Ele joga o consumo em uma outra thread. Roda em paralelo com o nosso processo que esta trabalhando no for
+	// apartir disso o nosso programa comeca a consumir
+	// go - eh o go routing para criar uma nova thread
+	go consumer.Consume()
+
+	// Cada msg que recebermos, vai cair no loop abaixo
+	for msg := range msgChan {
+		fmt.Println(string(msg.Value))
+	}
+
+}
