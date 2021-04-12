@@ -95,3 +95,31 @@ Nosso sistema le rotas. Mandamos as posicoes delas.
 
 Criamos o arquivo consumer.go. Ele vai ser responsavel por consumir e pegar os dados na nossa fila/topico do kafka.
 
+
+Nosso metodo Produce, da classe producer.go, quando recebermos uma msg do Kafka, vamos pegar-la, vms converter ela, de um JSON.
+Quando recebermos o JSON abaixo, e rodar o unmarshall, vai popular a nossa Struct. Nela, o ID vai virar routeId e o clientId vai continuar do JSON.
+{"clientId":"1","routeId":"1"}
+
+Sempre que alguem pedir para iniciar uma nova corrida, vamos ficar lendo do topico route.new-direction
+E sempre que formos mandar uma posicao daonde aquela corrida esta, vamos mandar route.new-position 
+{"clientId":"2","routeId":"2"}
+{"clientId":"3","routeId":"3"}
+
+Rodamos no nosso container que ira produzir a msg
+[appuser@13b6ffc4dba8 ~]$ kafka-console-producer --bootstrap-server=localhost:9092 --topic=route.new-direction
+
+
+Rodamos o programa do Go
+com o go run main.go
+
+E na terceira janela, que sera o consumidor, iremos rodar o comando:
+[appuser@13b6ffc4dba8 ~]$ kafka-console-consumer --bootstrap-server=localhost:9092 --topic=route.new-position --group=terminal
+
+E finalmente, na primeira janela do producer, rodamos em sequencia os seguintes comandos:
+{"clientId":"1","routeId":"1"}
+{"clientId":"2","routeId":"2"}        
+{"clientId":"3","routeId":"3"}
+
+Basicamente, o back-end que quando alguem falar p/ iniciar uma corrida, vai mandar o json assim para a gente. Recebemos ele (pq estamos consumindo) e dai quando comecamos a consumir
+comecamos a produzir as posicoes em um outro topico.
+=========================================================================================================================================

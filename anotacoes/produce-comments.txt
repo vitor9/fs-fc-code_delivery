@@ -1,0 +1,34 @@
+package kafka
+
+import (
+	"encoding/json"
+	ckafka "github.com/confluentinc/confluent-kafka-go/kafka"
+	route2 "github.com/vitor9/fs-fc-code_delivery/application/route"
+	"github.com/vitor9/fs-fc-code_delivery/infra/kafka"
+	"log"
+	"os"
+	"time"
+)
+
+// Vou pegar a msg recebida via parametro, e converter de JSON para Struct
+func Produce(msg *ckafka.Message) {
+	producer := kafka.NewKafkaProducer()
+	route := route2.NewRoute()
+	// Vamos converter o JSON no formato da nossa struct(route). O 'e comercial' (&) eh a referencia
+	// Unmarshall vai rodar as msg e tudo que estiver no route, ele vai preencher no nosso valor( clientID e operacaoID)
+	json.Unmarshal(msg.Value, &route)
+	route.LoadPositions()
+
+	positions, err := route.ExportJsonPositions()
+	if err != nil {
+		log.Println(err.Error())
+	}
+	// Loop para ficar mandando as nossas posicoes para o Kafka
+	// O value eh a nossa 'p'ositions
+	// cada item da nossa position eh enviado para o publish e vai para a fila readtest, do produce topic
+	for _, p := range positions {
+		kafka.Publish(p, os.Getenv("KafkaProduceTopic"), producer)
+		// Para nao ficar mandando muito rapido as transacoes, colocamos para mandar a cada 500 milisegundos
+		time.Sleep(time.Millisecond * 500)
+	}
+}
