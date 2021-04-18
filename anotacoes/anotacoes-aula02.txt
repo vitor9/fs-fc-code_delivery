@@ -1,0 +1,184 @@
+Principais necessidades que as empresas exigem, que eh estar aberto a aprender novas tecnologias, linguagens e frameworks.
+
+Sera feito uma mudanca de tecnologias no nosso projeto. Sairemos de Golang, e iremos para JavaScript e TypeScript com Node.JS. Para dar mais agilidade em todo o processo, vamos utilizar o framework backend
+Nest.JS. Ele eh perfeito para microsservicos, uma vez que ele possui de forma nativa, diversos mecanismos para comunicacao entre sistemas, desde gRPC, Kafka, RabbitMQ.
+
+Com ele, vamos utilizar como backend, ele vai enviar solicitacao para o nosso simulador via Kafka, falando que uma corrida nova comecou. Ele tambem vai receber as posicoes de cada corrida no nosso simulador
+e vai enviar essas posicoes para o nosso front-end, utilizando websockets.
+
+
+============================================================== INTRODUCAO AO NEST.JS ================================================================
+O QUE EH NEST.JS?
+Eh um framework node criado em 2k17. Revolucionou a comunidade Node. Eh um framework vai trabalhar com o velho padrao de frameworks MVC.
+Vamos desenvolver em 3 camadas, regras de negocio na model, os controllers vao interceptar as requisicoes e processar algo nas regras de negocio que vao ser as models e vai devolver as respostas. Camada 
+de view, que eh a camada de apresentacao para o usuario, podemos criar nossos HTMLs ou fazer todo nosso sistema, e ate criar uma API, que eh o que vamos fazer nessa aula.
+Ele vai incorporar por padrao o typescript para desenvolvimento, e tambem, vai incorporar as ideias de arquitetura do Angular.
+
+No nosso desenvolvimento, vamos trabalhar bastante com tipos, com os novos padroes de javascript, e o tempo todo vamos compilando nosso codigo e validando erros, todos os beneficios agregados do Javascript.
+No caso do Angular, vamos ter as ideias incorporadas no nosso desenvolvimento, baseando tudo em modulos. Tudo que vamos criando na app, tem que ser registrado no modulo. Ele eh um conjunto fechado de
+controllers, servicos. Podemos reusar essas coisas facilmente em outros modulos, e tambem pegar esse modulo inteirinho, e usar em outra aplicacao com Nest, pq eh so ligar em outra app.
+
+VANTAGENS DE UTILIZAR O NEST.JS
+- Vamos ter o conceito de COC (Convention Over Configuration) - Todas as convencoes ja impostas pelo nest, para que nao tenhamos que tomar uma serie de decisoes e ate em nomear os arquivos. elas vao dar
+mais produtividade, mais agilidade para desenvolver.
+
+- Typescript - Vai resolver varios problemas com a linguagem JavaScript.
+
+- Arquitetura escalavel - Se quisermos criar uma app muito pequena, tudo bem, uma maior, tudo bem tbm. Essas ideias incorporadas do Angular, permitem muito bem, que tenhamos arquitetura escalavel la dentro.
+
+- Integracao facil com varios tipos de bancos de dados - SQL Server, MySQL, MongoDB, entre outros, ja tem algo nativo para integrarmos e utilizarmos facil, sem precisar ficar rateando.
+
+- Suporte para Microsservicos - vamos ver que eh mt facil utilizar 2 meios de comunicacao, como websocket com react. E nessa aula, vamos ver a integracao com o Kafka. Eh facil conectar o nest
+no apache kafka.
+
+- Suporte a criacao de API REST, GraphQL - A app react que vai ser a capa do sistema, temos que pegar todas as rotas disponiveis, essas rotas vao estar armazenadas no MongoDB, com o Nest. Atraves
+dessa API rest, o NEST vai pegar facilmente o JSON da nossa API e disponibilizar tds as rotas disponiveis. Conseguimos gerar app tbm.
+
+Com o Nest, vamos gerar um esqueleto de app. Para fazer isso, precisamos ter o Node.JS instalado na nossa aplicacao
+==========================================================================================================================================================
+
+============================================================== MAO NA MASSA ================================================================
+Criando o projeto com o npm
+
+npx @nestjs/cli new nest-api
+
+No controller, o Service, de AppService, eh uma camada que criamos no Nest, de recursos que podem ser reutilizados na nossa app para podermos construir as nossas regras de negocio.
+
+Após rodarmos o nosso container com o comando
+docker-compose up.
+O Nest vai automaticamente subir o nosso programa.
+
+Com isso, abrimos outra janela de terminal e geramos os recursos, todos os metodos de CRUD, e implementamos a nossa logica:
+nest g resource routes
+
+
+Resource ja esta ligado com o conceito de recurso da API REST.
+
+Explicacao da adicao do mongodb no docker-compose.yaml:
+"db:" - Vamos chamar esse container de db
+"image: mongo" vai utilizar a imagem do mongodb
+"restart:always" Se o container falhar ao subir, ele tenta startar novamente.
+"volumes": vamos armazenar tudo de DB dentro do nosso projeto, se acontecer algo eh soh subir novamente.
+"- ./.docker/dbdata:/data/db - Faz o armazenamento em data/db, e o armazenamento vamos mandar lá para o docker
+ - ./.docker/mongo:/docker-entrypoint-initdb.d" - vai executar o script, considerando que o db padrao eh do nest(declarado em environment)
+"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=nest
+"
+Precisamos de 2 variaveis de ambientes, determina usuario root e senha. Nao eh necessario, mas eh bom para evitar qualquer problema de conexao.  
+initdb_database - vai determinar qual vai ser o DB que vamos trabalhar.
+
+Os registros da nossa colecao, sao chamados de documentos, que sao os objetos abaixo e podem equivaler as linhas da nossa tabela:
+db.routes.insertMany([
+    {
+      _id: '1',
+      title: 'Primeiro',
+      startPosition: { lat: -15.82594, lng: -47.92923 },
+      endPosition: { lat: -15.82942, lng: -47.92765 },
+    },
+
+Para deletarmos as informacoes da pasta dbdata, podemos excluir das seguintes formas:
+Primeiro - docker-compose down - vai matar os containers e vai excluir as informacoes de volume
+Depois - sudo rm -rf .docker/dbdata - eh necessario pq isso foi criado pelo docker via root
+Se nao rodarmos nessa sequencia, quando realizar o docker-compose up, vamos receber um erro, vamos ter que fazer o down para depois limpar tudo e subir dnv.
+
+Apartir da segunda vez que subirmos os nossos containers com o docker-compose, nao sera criado outra pasta dbdata, ele vai ignorar ela pq ja existe essa pasta, ela ja eh criada na 1a vez.
+Paramos em 44:50
+
+Para rodarmos o nosso container app, utilizamos o comando:
+docker-compose exec app bash
+
+A modelagem que precisamos na nossa app, eh a entidade. Essa modelagem, eh a do route, vai equivaler a colecao routets do mongodb
+Vamos modelar todos os campos para que o nest consiga capturar essas informacoes, e jogar dentro de um objeto dessa classe, para manipularmos e retornar para dentro do nosso controller e
+serializar o JSON. Pegar o nosso obj e transformar-lo no JSON para criar o endpoint de consulta. Vamos especificar todos estes campos.
+
+Para realizar essa modelagem, instalamos algumas bibliotecas para conectarmos ao mongo, mongoose, e o nestjs mongoose, que serve como uma ponte para se conectar nele 
+npm install mongoose @nestjs/mongoose --save
+
+o @Prop fala que eh sao propriedades
+
+O tipo raw, declara de forma especifica qual eh o tipo da informacaoo
+
+As declaracoes abaixo, sao os tipos dos campos la na nossa colecao routes. Colocamos tanto para startPosition, quanto p/ endPosition
+"
+  @Prop(
+    raw({
+      lat: { type: Number },
+      lng: { type: Number },
+    }),
+  )
+  startPosition: { lat: number; lng: number };
+"
+Quando vamos lidar com a estrutura que vai capturar e lidar com os dados no mongo, ela vai ter algumas coisas a mais. Ai vamos separar o tipo desta estrutura a mais, da nossa entidade.
+Vamos criar um novo tipo chamado de RouteDocument, que vai ser a juncao da entity route, com o document do proprio mongo 
+Com nest, separamos entidade do documento. Pq se quisermos tipar um retorno de um metodo, colocamos que estamos recebendo somente um route, mas na vdd estamos recebendo somente o tipo
+RouteDocument, mas nos final das contas vamos receber um RouteDocument, desconsideramos, pq queremos manipualr somente o Route.
+
+Para que o mongoose possa trabalhar com o nosos route, precisamos criar um schema no modelo dele. Entao a parte que fizemos abaixo, eh a geracao do schema, atraves da estrutura que o nest
+criou, vai gerar o schema dele, no modelo dele na variavel abaixo.
+"
+linha 28: export const RouteSchema = SchemaFactory.createForClass(Route);
+"
+
+Para que seja lido o nosso arquivo env, existe um pacote do nest.js com essa utilidade. Podemos instalar com o comando dentro do nosso container app:
+npm install @nestjs/config --save
+
+A declaracao abaixo, quer dizer que eh uma configuracao nova com a URL de conexao, para evitar warning ou erro.
+MongooseModule.forRoot(process.env.MONGO_DSN, {
+      useNewUrlParser: true,
+    }),
+
+Com a conexao pronta, precisamos informar ao mongoose as schemas que estao disponiveis
+feature no nest.js, significa os modulos filhos.
+
+Para realizarmos a consulta do nosso service, iremos chamar o exec do findAll(), para executar esta consulta
+  findAll() {
+    return this.routeModel.find().exec();
+  }
+
+Podemos utilizar a extensao do vscode REST API Client, para nao termos que utilizar uma ferramenta externa para testar nossas funcoes.
+Ao instalar, podemos criar um novo arquivo chamado de:
+api.http
+
+Inserir a linha:
+GET http://localhost:3000/routes
+
+E clicar em "Send Request"
+
+Imaginando como ia ser a situacao em React:
+- Carreguei a app no browser
+- Puxei as informacoes via ajax
+- Batei na app
+- Temos as 3 rotas disponiveis
+- Vou escolher uma para iniciar a corrida
+Entao vou ter que me comunicar novamente com o Nest, para falar qual eh a corrida que eu quero iniciar. Do Nest, vou ter que comunicar com o simulador para que ele comece a me mandar estas posicoes.
+Esta forma de pedir para o Nest qual eh a corrida que quero comecar, eh o que devemos elaborar agora.
+Temos 2 formas de fazer:
+- Poderia fazer via a propria API REST, via routes.controller. Criamos a acao dela, ligamos com o verbo.
+- Via WebSocket, que vai ser com o react.
+
+Seguindo a primeira forma, criamos um novo metodo:
+"
+  @Get(':id/start')
+  startRoute(@Param('id') id: string) {
+    console.log(id);
+  }
+"
+Ai vamos mandar uma msg para o topico do Kafka que o microsservico simulador vai ler, vai entender que eh para iniciar uma nova corrida e vai
+comecar a mandar para mim as posicoes.
+
+Sempre que for realizar um up no container do simulator, devemos baixar com o comando abaixo, se nao ira retornar um erro
+docker-compose down
+
+Instalando duas bibliotecas, microservices habilita o supp a microsservicos e o kafkajs permite que a gente conecte no kafka atraves do node
+npm install kafkajs @nestjs/microservices --save
+
+tem uma macete no nest, que quando vamos configurar a conexao do nosso consumidor, temos que passar um groupId e em desenv eh bom gerar ele de maneira aleatoria. Entao
+iremos validar se for ambiente de desenv, geramos de maneira aleatoria, caso contrario, vai ser fixo.
+Quando colocamos um valor para dev, atualizamos nossa app, e ele demora mais para carregar.
+
+No routes.module, vai ser montado o useFactory depois do configmodule(de app.module) ter lido o .env
+
+Terminado em 1:15:00

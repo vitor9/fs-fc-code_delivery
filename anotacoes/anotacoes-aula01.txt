@@ -123,3 +123,5 @@ E finalmente, na primeira janela do producer, rodamos em sequencia os seguintes 
 Basicamente, o back-end que quando alguem falar p/ iniciar uma corrida, vai mandar o json assim para a gente. Recebemos ele (pq estamos consumindo) e dai quando comecamos a consumir
 comecamos a produzir as posicoes em um outro topico.
 =========================================================================================================================================
+Dicas:
+- Nao se apegue a linguagem de programacao. Nao eh necessario pegar todos os detalhes, e sim, pegar a ideia principal 	do que estamos tentando rodar.
