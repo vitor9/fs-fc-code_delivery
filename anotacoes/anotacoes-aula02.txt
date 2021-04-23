@@ -200,3 +200,18 @@ Antes de rodar nossa app na porta 3000, chamamos mais um await
 "
 await app.startAllMicroservicesAsync();
 "
+
+Subindo os containers na ordem certa:
+Simulator:
+sobe primeiro os containers do Kafka em:
+/simulator/.docker/kafka
+docker-compose up
+
+Depois o simulador em:
+/simulador/
+docker-compose up
+
+Se for a primeira vez rodando o nest-api, executar o comando:
+sudo rm -rf .docker/dbdata
+Depois:
+docker-compose up
