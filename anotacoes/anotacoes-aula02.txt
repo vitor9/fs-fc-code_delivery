@@ -181,4 +181,22 @@ Quando colocamos um valor para dev, atualizamos nossa app, e ele demora mais par
 
 No routes.module, vai ser montado o useFactory depois do configmodule(de app.module) ter lido o .env
 
-Terminado em 1:15:00
+Podemos entrar na interface da Confluent, acessando o link:
+localhost:9021
+
+Acessamos o nosso cluster > Topics > route.new-direction. Entao, rodamos o request:
+GET http://localhost:3000/routes/2/start
+
+E a pagina da nossa interface ira add uma nova msg item do topico route.new-direction.
+Eh como se o nosso simulador tivesse recebido a nossa msg e irá retornar as posicoes, que eh o que vamos fazer agora.
+
+Esse tipo de comunicacao que foi registrada no nosso routes.module, foi a comunicacao para sermos o cliente que vai produzir msg. Se eu quero
+trabalhar com a escuta das msg no topico, entao eu preciso fazer uma outra confg.
+
+No main.ts, dps que geramos a instancia da nossa app, chamamos o app.connectMicroservice, passamos o objeto com as nossas confg, importamos o tipo de transport para o Kafka.
+Ai, conectamos na nossa estrutura de serviço para conectar la no Kafka.
+
+Antes de rodar nossa app na porta 3000, chamamos mais um await
+"
+await app.startAllMicroservicesAsync();
+"
