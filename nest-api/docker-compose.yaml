@@ -11,6 +11,7 @@ services:
       - .:/home/node/app
     depends_on:
       - db
+    # o extra_hosts, facilita pegar diversos sistemas em redes diferentes e coloca eles para se conversarem
     extra_hosts:
       - "host.docker.internal:172.17.0.1"
 
