@@ -2,6 +2,12 @@ simulator/.idea
 simulator/.vscode
 simulator/.env
 
+nest-api/.vscode
+nest-api/.docker/dbdata/
+nest-api/dist/
+nest-api/node_modules/
+
+
 # compiled output
 /dist
 /node_modules
