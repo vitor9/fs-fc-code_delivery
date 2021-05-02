@@ -215,3 +215,45 @@ Se for a primeira vez rodando o nest-api, executar o comando:
 sudo rm -rf .docker/dbdata
 Depois:
 docker-compose up
+
+
+Queremos ouvir as msg do simulator msg no topico newposition
+
+Utilizamos o decorator abaixo para ele ler o topico do Kafka. Ele tambem eh um padrao de leitura para outras mensagerias, como o RabbitMQ
+@MessagePattern()
+
+NAO SE ESQUECA DE QUE O ARQUIVO .ENV TEM QUE ESTAR COM SEU NOME CORRETO! VERIFIQUE SE ELE ESTA PRESENTE NA MESMA PASTA QUE CLASSE MAIN.GO E NAO ESTA NOMEADO COMO O .ENV.EXAMPLE
+
+Vamos rodar nosso simulador da seguinte maneira:
+Primeiro terminal producer:
+Na pasta /simulator/
+Entramos no nosso container que ira rodar o simulador:
+docker-compose exec app bash
+Rodamos o comando dentro do App
+go run main.go
+
+Segundo terminal producer:
+Na pasta /simulator/
+Entramos no container do nosso kafka:
+docker exec -it kafka_kafka_1 bash
+Rodamos o seguinte comando
+kafka-console-producer --bootstrap-server=localhost:9092 --topic=route.new-direction
+
+Terceiro terminal consumer:
+Na pasta /simulator/
+Entramos no container do nosso kafka:
+docker exec -it kafka_kafka_1 bash
+Rodamos o seguinte comando
+kafka-console-consumer --bootstrap-server=localhost:9092 --topic=route.new-position --group=terminal
+
+Rodamos qualquer uma das entradas abaixo no terminal do producer:
+{"clientId":"1","routeId":"1"}
+{"clientId":"2","routeId":"2"}
+{"clientId":"3","routeId":"3"}
+
+OU
+Podemos rodar o seguinte request:
+GET http://localhost:3000/routes/1/start
+
+Com isso, ja realizamos a comunicacao entre os microsservicos. A unica coisa que precisamos, eh ter uma padrao de mensagem.
+As duas apps precisam saber quais as informacoes precisavam ser trocadas.
