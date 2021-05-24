@@ -1,0 +1,130 @@
+================================== INTRODUCAO =================================
+Vamos construir nosso front-end com o React.
+
+Algo que precisamos entender, eh que o React esta sendo agregado no nosso projeto, para facilitar o nosso "desmovimento", para desenv nossa a app baseado em componentes, utilizando a nossa
+programacao reativa que esta por tras do React.
+
+Antigamente, a Web de tempos atras, nao tinha padrao de desenvolvimento, p/ex, sites antigos eram uma coxa de retalhes, iamos pegando varios pedaços e costurando na nossa app, que era dificil
+de modificar, manter e visualizar.
+
+O React tem uma singularidade de permitir que criemos nossos componentes de maneira direta e simples, que ele vai agregar o jsx ou jx, entao vamos colocando nossas regras junto com o template, sem burocracia e direto.
+
+Com o Typescript, vamos ter a nossa programação fortemente tipada, utilizando padroes que o javascript comum tem.
+
+Vai evitar varios erros que podem acontecer, que vamos poder visualizar na propria IDE
+Tudo que vamos acessar, vai ter um tipo, fica facil de consultar, tudo vai estar dentro da nossa propria app.
+
+As tags HTML estao tipadas, sabemos todos os atributos e os seus tipos que podem ser passados, temos uma programação muito melhor.
+
+Vamos criar nossa app react com a ferramenta "create-react-app", que irá criar o esqueleto de uma app React. Ele vai ajudar a incorporar o Typescript no meio do processo, e vamos trabalhar
+com os novos padroes do JS, com modulos, etc, e vai facilitar o nosso desenv.
+
+Eh apenas um modo de trabalhar com React, poderiamos pegar a nossa app, p/ex legada, importar o React de um CDN, e já conseguimos utilizar
+
+Para trabalharmos com ele, precisamos do Node, somente para gerarmos essa app, e depois vamos partir para o Docker. 
+
+
+============================== GERANDO O PROJETO COM O CREATE-REACT-APP ====================
+Podemos utilizar o npx para fazer a geracao do nosso projeto.
+npx create-react-app --template typescript react-frontend
+
+E ai ele var importar o react, o react-dom que trabalha em conjunto com o react e também faz as transformações no HTML. 
+react-scripts permite que a gente execute a nossa app em desenv no browser e gere a versao dela de prd, e que aplique testes.
+
+Ele sugere os seguintes comandos para poder rodar:
+"
+We suggest that you begin by typing:
+	cd react-frontend
+	npm start
+"
+
+entao entramos na pasta react-frontend e rodamos
+"
+npm start
+"
+
+Para habilitarmos o docker no React, eh a msm coisa do Nest.js, pq vamos do node para desenvolver.
+Como ja temos a nossa app do Nest.js rodando na porta 3000:3000, vamos ter que mudar a porta do nosso
+react front-end para 3001:3000, assim evitamos que gere conflito de portas.
+
+Vamos criar a pasta .docker para criar o script entrypoint.sh, que eh a msm coisa do Nest, que no final nao eh npm run start:dev, e sim, somente npm start.
+
+Vamos criar os arquivos .env para colocar a key do Google maps e iremos add ele no .gitignore junto com o .history/
+
+Vamos realizar um chmod para dar permissao para o nosso entrypoint
+"
+chmod +x .docker/entrypoint.sh
+"
+
+Logo apos isso, rodamos o container do nosso react
+"
+~/imersao-fs-fc/fs-fc-code_delivery/react-frontend$ docker-compose up
+"
+
+! PROBLEMA AO SUBIR !
+Devido a um erro que cometi no docker-compose e percebi só depois que subi o container, tive de fazer o docker rebuildar novamente o container para
+efetivar a mudanca que fiz no yaml. Para efetivar essa mudança, rebuildei o container com o comando:
+"react-frontend$ docker-compose up --build"
+
+E ai acessamos a URL que definimos no docker-compose em "ports"
+Saida do terminal após rodar o docker-compose:
+"
+app_1  | Compiled successfully!
+app_1  | 
+app_1  | You can now view react-frontend in the browser.
+app_1  | 
+app_1  |   Local:            http://localhost:3000
+app_1  |   On Your Network:  http://172.24.0.2:3000
+"
+
+Se editarmos algo do arquivo em src/App.tsx, ele vai compilar e recarregar automaticamente em tempo real.
+
+tsconfig.json - arquivo de config das regras do typescript.
+
+Precisamos entender o que esta na pasta public. Podemos colocar dentro dela, imagens, arqv de icon, fontes de text, que irao ser utilizadas no front-end, ela eh acessivel ao nosso condigo fonte.
+
+Mas a nossa app dessa tela inicial do React, eh rendereizada com o html "index.html". 
+O arqv de manifesto para as informacoes do site nesse arqv
+
+No index.html, não podemos mexer na parte do final do arqv:
+"
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+"
+
+Quando rodamos a app React, eh gerado um serv e o html eh injetado com um javascript que eh compilado, pq nunca rodamos typescript no browser, e sim javascript
+Entao ele injeta e ja mostra la, nao precisamos saber como esse processo eh feito ou entender. Soh precisamos entender
+que o que fizermos nesse HTML, vai refletir na app como um todo. E a app vai ficar toda na div root.
+Pq dentro da pasta source, temos o index.tsx, que eh o que inicia nossa app. Lah, eh importado o ReactDOM, que eh a lib que faz as transformacoes e que mostra as mudancas. 
+
+Vamos renderizar o componente App na div com o id root:
+"
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+"
+Esse componente 'App', ja vem na nossa app ja importado via ES6 modules 
+React.StrictMode eh o que ativa em dev para ficar monitorando se estamos fazendo algo errado, tanto no console do devtools do browser ou na compilacao.
+
+Os arquivos tsx, sao arquivos typescript, com o 'x' no final. Significa que eh TS + JSX
+
+Quando desenv com React, tendemos a misturar o HTMl com o JS. Se fosse apenas o javascript, seria jsx.
+
+JSX eh uma linguagem agregada ao nosso projeto que permite a situacao, nao funciona la no browser, eh tudo processado e compilado ao JS que o browser entende
+
+Como o React eh direto, tudo que iremos fazer, sera dentro das funcoes, e agora com o React, tendemos a criar mais funcoes ainda por causa de um novo recurso chamado "React Hooks", lancado na versao 16. Entao a gente tende a criar

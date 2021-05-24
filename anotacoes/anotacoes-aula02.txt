@@ -257,3 +257,7 @@ GET http://localhost:3000/routes/1/start
 
 Com isso, ja realizamos a comunicacao entre os microsservicos. A unica coisa que precisamos, eh ter uma padrao de mensagem.
 As duas apps precisam saber quais as informacoes precisavam ser trocadas.
+
+Ao decorrer do curso, iremos implementar uma requisicao de uma nova corrida, via websocket.
+
+Com isso, finalmente finalizamos a aula 2.
