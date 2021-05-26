@@ -128,3 +128,47 @@ Quando desenv com React, tendemos a misturar o HTMl com o JS. Se fosse apenas o 
 JSX eh uma linguagem agregada ao nosso projeto que permite a situacao, nao funciona la no browser, eh tudo processado e compilado ao JS que o browser entende
 
 Como o React eh direto, tudo que iremos fazer, sera dentro das funcoes, e agora com o React, tendemos a criar mais funcoes ainda por causa de um novo recurso chamado "React Hooks", lancado na versao 16. Entao a gente tende a criar
+
+Se caso dar erro na pagina "Failed to compile", paramos o nosso container e subimos ele de novo.
+
+Recomenda instalar a extensao do Reactjs code snippets
+
+Vamos estilizar com componentes visuais prontos, o material-ui, que eh bibliotecas de estilo para o React. Ela vai trabalhar utilizando os conceitos de 
+design do Google. Nosso layout vai ser todo gerado com o material-ui
+
+Vamos instalar o pacote do material-ui:
+Entrando no nosso container
+docker-compose exec app bash
+
+Instalando o material-ui:(--save salva no package.json)
+npm install @material-ui/core --save
+
+Vamos usar a font de texto do Google, a roboto.
+
+Sistema de grid vai ter 12 colunas:
+  <Grid item xs={12}>Formulario</Grid>
+  <Grid item xs={12}>Mapa</Grid>
+Para saber mais disso, temos de ir em Breakpoints da documentacao da biblioteca do material-ui
+https://material-ui.com/pt/customization/breakpoints/
+
+A Tag CssBaseLine eh a tag que mudou o tema base da app para Dark. Aplica questoes de melhoramentos e temas dinamicos.
+
+Quando add uma var de ambiente(que no caso foi no arqv .env) temos que quebrar o npm start e startar de novo.
+Entao devemos parar o nosso container e subir-lo dnv
+
+Paramos em 00:36:00, erro no CORS
+
+Deu erro de CORS, porque sao 2 apps diferentes, e o browser nao entendeu que eh possivel acessar essas informacoes. No projeto do nest-js, devemos habilitar o  cors lá no create no main.ts perto do NestFactory.
+
+Para receber um ID na serializacao da API, precisamos ajustar no nosso projeto do Nest.js. No nosso route.entity.ts, vamos declarar que o _id vai ser uma propriedade
+pq estamos personalizando ele, e nao usando o ID do proprio mongo, entao eh so declarar ele que ele vai ser serializado.
+
+E ai, mudamos aonde esta como route.id no nosso models.ts  e no Mapping.tsx do react-frontend, para o route._id que declaramos no nest, 
+que vai vir dessa forma da nossa API. Para consultar a chave da Google API, devemos sempre acessar nossa Google Cloud
+
+Para trabalhar com o google-maps na nossa app, devemos instalar com o NPM DENTRO DO NOSSO CONTAINER:
+npm install google-maps --save
+
+Para carregarmos a estrutura do Google Maps, utilizamos a variavel Loader
+
+Paramos em 45:20, iremos importar as constantes do Google Maps

@@ -224,6 +224,7 @@ Utilizamos o decorator abaixo para ele ler o topico do Kafka. Ele tambem eh um p
 
 NAO SE ESQUECA DE QUE O ARQUIVO .ENV TEM QUE ESTAR COM SEU NOME CORRETO! VERIFIQUE SE ELE ESTA PRESENTE NA MESMA PASTA QUE CLASSE MAIN.GO E NAO ESTA NOMEADO COMO O .ENV.EXAMPLE
 
+Opcionais:
 Vamos rodar nosso simulador da seguinte maneira:
 Primeiro terminal producer:
 Na pasta /simulator/

@@ -1,3 +1,6 @@
+# Caso tenha problema para add um novo projeto no Github, soh rodar o comando:
+# git rm --cached <nomedoprojeto>/ rm -r -f <nomedoprojeto>/.git 
+
 simulator/.idea
 simulator/.vscode
 simulator/.env
@@ -7,6 +10,10 @@ nest-api/.docker/dbdata/
 nest-api/dist/
 nest-api/node_modules/
 
+react-frontend/.vscode
+react-frontend/.docker/dbdata/
+react-frontend/dist/
+react-frontend/node_modules/
 
 # compiled output
 /dist
