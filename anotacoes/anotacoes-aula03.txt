@@ -171,4 +171,4 @@ npm install google-maps --save
 
 Para carregarmos a estrutura do Google Maps, utilizamos a variavel Loader
 
-Paramos em 45:20, iremos importar as constantes do Google Maps
+Paramos em 53:00, estamos indo colocar os icones .svg
