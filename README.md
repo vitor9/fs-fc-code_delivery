@@ -1,3 +1,6 @@
+# Devido aos problemas com a API do Google Maps, nao foi possivel finalizar este projeto.
+Infelizmente esta dando erro de billing/pagamento e nao tenho interesse em assinar o Google Cloud apenas para este projeto.
+
 # Full Stack-Full Cycle - Code Delivery / fs-fc-code_delivery
 Repositorio dedicado a maratona Full Stack e Full Cycle
 

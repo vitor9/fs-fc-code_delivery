@@ -1,4 +1,4 @@
-import { Button, Grid, MenuItem, Select } from "@material-ui/core"
+import { Button, colors, Grid, MenuItem, Select } from "@material-ui/core"
 import { Loader } from "google-maps";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { getCurrentPosition } from "../util/geolocation";
@@ -53,8 +53,21 @@ export const Mapping = (props: Props) => {
                     anchor: new google.maps.Point(26, 26),
                 },
             });
+            new google.maps.Marker({
+                position: route?.endPosition,
+                map: mapRef.current,
+                icon: {
+                    path:
+                        "",
+                    fillColor: '#454545',
+                    strokeColor: '#454545',
+                    strokeWeight: 1,
+                    fillOpacity: 1,
+                    anchor: new google.maps.Point(26, 26),
+                },
+            });
         },
-        [routeIdSelected]
+        [routeIdSelected, routes]
     );
 
 
